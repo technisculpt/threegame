@@ -61,30 +61,6 @@ var light = new THREE.PointLight(0xFFFF00);
 light.position.set(10, 0, 25);
 scene.add(light);
 
-/*
-document.addEventListener("keydown", onDocumentKeyDown, false);
-function onDocumentKeyDown(event) {
-    var player1 = scene.getObjectByName('player_1');
-    function(e) {
-      switch (e.key) {
-        case 37:
-        player1.position.x -= x_vel;
-        break;
-        case 38:
-        player1.position.y += y_vel;
-        break;
-        case 39:
-        player1.position.x += x_vel;
-        break;
-        case 40:
-        player1.position.y -= y_vel;
-        break;
-      }
-      //render()
-    };
-  }
-*/
-
 document.addEventListener('keydown', logKey);
 
 function logKey(e) {

@@ -7,7 +7,25 @@ import { GUI } from '../jsm/libs/lil-gui.module.min.js'
 const scene = new THREE.Scene()
 
 const grid_size = 3;
+let x_vel = grid_size;
+let y_vel = grid_size;
 
+
+document.addEventListener("keydown", onDocumentKeyDown, false);
+function onDocumentKeyDown(event) {
+    var keyCode = event.which;
+    if (keyCode == 87) {
+        cube.position.y += ySpeed;
+    } else if (keyCode == 83) {
+        cube.position.y -= ySpeed;
+    } else if (keyCode == 65) {
+        cube.position.x -= xSpeed;
+    } else if (keyCode == 68) {
+        cube.position.x += xSpeed;
+    } else if (keyCode == 32) {
+        cube.position.set(0, 0, 0);
+    }
+};
 // THREE.PerspectiveCamera(fov, aspect, nearest plane of view, furthest)
 const camera = new THREE.PerspectiveCamera(
     75,
@@ -34,15 +52,48 @@ scene.add(cube)
 
 const geometry2 = new THREE.BoxGeometry(grid_size, grid_size, grid_size)
 const material2 = new THREE.MeshPhongMaterial({color: 0xAD90A7})
-const cube2 = new THREE.Mesh(geometry2, material2)
-cube2.position.x = 1
-scene.add(cube2)
+const player_1 = new THREE.Mesh(geometry2, material2)
+player_1.name = "player_1"
+player_1.position.z = grid_size
+scene.add(player_1)
 
 var light = new THREE.PointLight(0xFFFF00);
 light.position.set(10, 0, 25);
 scene.add(light);
 
+/*
+document.addEventListener("keydown", onDocumentKeyDown, false);
+function onDocumentKeyDown(event) {
+    var player1 = scene.getObjectByName('player_1');
+    function(e) {
+      switch (e.key) {
+        case 37:
+        player1.position.x -= x_vel;
+        break;
+        case 38:
+        player1.position.y += y_vel;
+        break;
+        case 39:
+        player1.position.x += x_vel;
+        break;
+        case 40:
+        player1.position.y -= y_vel;
+        break;
+      }
+      //render()
+    };
+  }
+*/
 
+document.addEventListener('keydown', logKey);
+
+function logKey(e) {
+    var player1 = scene.getObjectByName('player_1');
+    if (e.code == 'ArrowUp') player1.position.y += y_vel;
+    if (e.code == 'ArrowDown') player1.position.y -= y_vel;
+    if (e.code == 'ArrowLeft') player1.position.x -= x_vel;
+    if (e.code == 'ArrowRight') player1.position.x += x_vel;
+}
 
 //const stats = Stats()
 //document.body.appendChild(stats.dom)

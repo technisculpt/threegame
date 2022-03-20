@@ -1,2 +1,2 @@
 # threegame
-three test
+mucking around in three.js

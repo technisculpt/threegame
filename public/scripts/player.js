@@ -5,7 +5,7 @@ export default class Player
     constructor(scene, width, height, grid_size, x_vel, y_vel, keys, player_name, colour)
     {
         const geometry2 = new THREE.BoxGeometry(grid_size, grid_size, grid_size)
-        const material2 = new THREE.MeshPhongMaterial({color: colour})
+        const material2 = new THREE.MeshBasicMaterial({color: colour})
         const player_1 = new THREE.Mesh(geometry2, material2)
         player_1.name = player_name
         player_1.position.x = grid_size - width/2

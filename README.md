@@ -12,8 +12,3 @@
 ### npm install @babel/node
 ### npm install @babel/preset-env
 ### npm install nodemon -g
-
-### "start": "node app.js",
-### "start": "nodemon — exec babel-node index.js",
-### "build": "babel index.js - out-file index-compiled.js",
-### "type": "module"

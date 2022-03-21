@@ -4,7 +4,7 @@ import { OrbitControls } from '../jsm/controls/OrbitControls.js'
 //import Stats from '../jsm/libs/stats.module.js'
 import { GUI } from '../jsm/libs/lil-gui.module.min.js'
 import Layout from './layout.js'
-
+import Player from './player.js'
 const scene = new THREE.Scene()
 
 const grid_size = 3
@@ -39,40 +39,12 @@ const background = new THREE.Mesh(geometry, material)
 background.position.x -= grid_size
 scene.add(background)
 
-const geometry2 = new THREE.BoxGeometry(grid_size, grid_size, grid_size)
-const material2 = new THREE.MeshPhongMaterial({color: 0xFFF0A7})
-const player_1 = new THREE.Mesh(geometry2, material2)
-player_1.name = "player_1"
-player_1.position.y += grid_size
-player_1.position.z = grid_size
-scene.add(player_1)
 
 var light = new THREE.PointLight(0xFFFF00);
 light.position.set(10, 0, 25);
 scene.add(light);
 
-document.addEventListener('keydown', logKey);
-
-function logKey(e) {
-    var player1 = scene.getObjectByName('player_1');
-    if (e.code == 'ArrowUp'){
-        let x_pos = Math.floor((player1.position.x + width/2)/grid_size)
-        let y_pos = Math.floor((player1.position.y + height/2)/grid_size)
-        console.log(document.grid.grid[x_pos][y_pos])
-        if (document.grid.grid[x_pos][y_pos] == 1)
-        {
-            console.log(document.grid.grid[x_pos][y_pos])
-        }
-        else
-        {
-            player1.position.y += grid_size;
-        }
-    }
-    if (e.code == 'ArrowDown') player1.position.y -= y_vel;
-    if (e.code == 'ArrowLeft') player1.position.x -= x_vel;
-    if (e.code == 'ArrowRight') player1.position.x += x_vel;
-
-}
+let player_1 = new Player(scene, width, height, grid_size, x_vel, y_vel, ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'], "player_1", 0xFFF0A7);
 
 //const stats = Stats()
 //document.body.appendChild(stats.dom)

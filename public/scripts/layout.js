@@ -15,6 +15,7 @@ export default class Layout {
             while(box_count < boxes)
             {
                 let new_position = Math.floor((Math.random() * rows));
+                console.log(new_position)
                 if (this.grid[col][new_position])
                 {
                     // pass

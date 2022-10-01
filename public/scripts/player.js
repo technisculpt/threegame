@@ -14,6 +14,11 @@ export default class Player
         scene.add(player_1)
 
         document.addEventListener('keydown', logKey);
+        document.addEventListener('mousemove', logMovement);
+
+        function logMovement(e) {
+            camera.rotation.y -= e.movementX/100;
+          }
 
         function logKey(e)
         {

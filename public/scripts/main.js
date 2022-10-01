@@ -23,9 +23,12 @@ const camera = new THREE.PerspectiveCamera(
     1000
 );
 
-camera.position.y = -77
-camera.position.z = 65
-camera.rotation.x = 0.747
+camera.position.z = 6
+camera.position.y = -45
+camera.position.x = -37.6
+camera.rotation.x = 1.52
+camera.rotation.y = 0
+camera.rotation.z = 0
 
 const renderer = new THREE.WebGLRenderer()
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -44,12 +47,12 @@ var light = new THREE.PointLight(0xFFFF00);
 light.position.set(10, 0, 25);
 scene.add(light);
 
-let player_1 = new Player(scene, width, height, grid_size, x_vel, y_vel, ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'], "player_1", 0xAD001A);
+let player_1 = new Player(scene, camera, width, height, grid_size, x_vel, y_vel, ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'], "player_1", 0xAD001A);
 
 //const stats = Stats()
 //document.body.appendChild(stats.dom)
 
-/*
+
 const gui = new GUI()
 const cam_pos = gui.addFolder('Camera pos')
 const cam_rot = gui.addFolder('Camera rot')
@@ -61,7 +64,7 @@ cam_rot.add(camera.rotation, 'x', -Math.PI, Math.PI)
 cam_rot.add(camera.rotation, 'y', -Math.PI, Math.PI)
 cam_rot.add(camera.rotation, 'z', -Math.PI, Math.PI)
 cam_rot.open()
-*/
+
 
 function animate() {
     requestAnimationFrame(animate)

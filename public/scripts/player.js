@@ -2,7 +2,7 @@ import * as THREE from 'three'
 
 export default class Player
 {
-    constructor(scene, width, height, grid_size, x_vel, y_vel, keys, player_name, colour)
+    constructor(scene, camera, width, height, grid_size, x_vel, y_vel, keys, player_name, colour)
     {
         const geometry2 = new THREE.BoxGeometry(grid_size, grid_size, grid_size)
         const material2 = new THREE.MeshBasicMaterial({color: colour})
@@ -22,45 +22,34 @@ export default class Player
             let y_pos = Math.floor((player1.position.y + height/2)/grid_size)
             if (e.code == keys[0]) // up
             {
-                if (document.grid.grid[x_pos][y_pos + 1] == 1)
-                {
-                    //pass
-                }
-                else
-                {
+                if (document.grid.grid[x_pos][y_pos + 1] != 1)
+                {  
+                    camera.position.y += grid_size;
                     player1.position.y += grid_size;
                 }
             }
             if (e.code == keys[1])
             {
-                if (document.grid.grid[x_pos][y_pos - 1] == 1)
+                if (document.grid.grid[x_pos][y_pos - 1] != 1)
+
                 {
-                    //pass
-                }
-                else
-                {
+                    camera.position.y -= grid_size;
                     player1.position.y -= grid_size;
                 }
             }
             if (e.code == keys[2])
             {
-                if (document.grid.grid[x_pos - 1][y_pos] == 1)
+                if (document.grid.grid[x_pos - 1][y_pos] != 1)
                 {
-                    //pass
-                }
-                else
-                {
+                    camera.position.x -= grid_size;
                     player1.position.x -= x_vel;
                 }
             }
             if (e.code == keys[3])
             {
-                if (document.grid.grid[x_pos + 1][y_pos] == 1)
+                if (document.grid.grid[x_pos + 1][y_pos] != 1)
                 {
-                    //pass
-                }
-                else
-                {
+                    camera.position.x += grid_size;
                     player1.position.x += x_vel;
                 }
             }

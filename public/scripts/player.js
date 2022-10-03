@@ -1,9 +1,11 @@
 import * as THREE from 'three'
+import { TWEEN } from '../jsm/libs/tween.module.min.js'
 
 export default class Player
 {
     constructor(scene, camera, width, height, grid_size, x_vel, y_vel, keys, player_name, colour)
     {
+        //debounce = False;
         const geometry2 = new THREE.BoxGeometry(grid_size, grid_size, grid_size)
         const material2 = new THREE.MeshBasicMaterial({color: colour})
         const player_1 = new THREE.Mesh(geometry2, material2)
@@ -29,8 +31,25 @@ export default class Player
             {
                 if (document.grid.grid[x_pos][y_pos + 1] != 1)
                 {  
-                    camera.position.y += grid_size;
-                    player1.position.y += grid_size;
+                    //camera.position.y += grid_size;
+                    //player1.position.y += grid_size;
+                    new TWEEN.Tween(player1.position)
+                        .to(
+                            {
+                                y: player1.position.y + grid_size,
+                            },
+                            200
+                        )
+                        .start()
+                    new TWEEN.Tween(camera.position)
+                        .to(
+                            {
+                                y: camera.position.y + grid_size,
+                            },
+                            200
+                        )
+                        .start()
+
                 }
             }
             if (e.code == keys[1])

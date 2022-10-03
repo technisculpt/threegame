@@ -3,6 +3,7 @@ import WebGL from '../jsm/capabilities/WebGL.js'
 import { OrbitControls } from '../jsm/controls/OrbitControls.js'
 //import Stats from '../jsm/libs/stats.module.js'
 import { GUI } from '../jsm/libs/lil-gui.module.min.js'
+import { TWEEN } from '../jsm/libs/tween.module.min.js'
 import Layout from './layout.js'
 import Player from './player.js'
 const scene = new THREE.Scene()
@@ -69,6 +70,7 @@ cam_rot.open()
 function animate() {
     requestAnimationFrame(animate)
     //controls.update()
+    TWEEN.update()
     render()
     //stats.update()
 }

@@ -5,7 +5,7 @@ export default class Player
 {
     constructor(scene, camera, width, height, grid_size, x_vel, y_vel, keys, player_name, colour)
     {
-        //debounce = False;
+        const tween_duration = 20;
         const geometry2 = new THREE.BoxGeometry(grid_size, grid_size, grid_size)
         const material2 = new THREE.MeshBasicMaterial({color: colour})
         const player_1 = new THREE.Mesh(geometry2, material2)
@@ -16,11 +16,12 @@ export default class Player
         scene.add(player_1)
 
         document.addEventListener('keydown', logKey);
-        document.addEventListener('mousemove', logMovement);
+        //document.addEventListener('mousemove', logMovement);
 
-        function logMovement(e) {
+        function logMovement(e)
+        {
             camera.rotation.y -= e.movementX/100;
-          }
+        }
 
         function logKey(e)
         {
@@ -29,52 +30,34 @@ export default class Player
             let y_pos = Math.floor((player1.position.y + height/2)/grid_size)
             if (e.code == keys[0]) // up
             {
-                if (document.grid.grid[x_pos][y_pos + 1] != 1)
+                if (!document.grid.grid[x_pos][y_pos + 1])
                 {  
-                    //camera.position.y += grid_size;
-                    //player1.position.y += grid_size;
-                    new TWEEN.Tween(player1.position)
-                        .to(
-                            {
-                                y: player1.position.y + grid_size,
-                            },
-                            200
-                        )
-                        .start()
-                    new TWEEN.Tween(camera.position)
-                        .to(
-                            {
-                                y: camera.position.y + grid_size,
-                            },
-                            200
-                        )
-                        .start()
-
+                    new TWEEN.Tween(player1.position).to({y: player1.position.y + grid_size},tween_duration).start()
+                    new TWEEN.Tween(camera.position).to({y: camera.position.y + grid_size},tween_duration).start()
                 }
             }
             if (e.code == keys[1])
             {
-                if (document.grid.grid[x_pos][y_pos - 1] != 1)
-
+                if (!document.grid.grid[x_pos][y_pos - 1])
                 {
-                    camera.position.y -= grid_size;
-                    player1.position.y -= grid_size;
+                    new TWEEN.Tween(player1.position).to({y: player1.position.y - grid_size},tween_duration).start()
+                    new TWEEN.Tween(camera.position).to({y: camera.position.y - grid_size},tween_duration).start()
                 }
             }
             if (e.code == keys[2])
             {
-                if (document.grid.grid[x_pos - 1][y_pos] != 1)
+                if (!document.grid.grid[x_pos - 1][y_pos])
                 {
-                    camera.position.x -= grid_size;
-                    player1.position.x -= x_vel;
+                    new TWEEN.Tween(player1.position).to({x: player1.position.x - grid_size},tween_duration).start()
+                    new TWEEN.Tween(camera.position).to({x: camera.position.x - grid_size},tween_duration).start()
                 }
             }
             if (e.code == keys[3])
             {
-                if (document.grid.grid[x_pos + 1][y_pos] != 1)
+                if (!document.grid.grid[x_pos + 1][y_pos])
                 {
-                    camera.position.x += grid_size;
-                    player1.position.x += x_vel;
+                    new TWEEN.Tween(player1.position).to({x: player1.position.x + grid_size},tween_duration).start()
+                    new TWEEN.Tween(camera.position).to({x: camera.position.x + grid_size},tween_duration).start()
                 }
             }
         }

@@ -14,16 +14,11 @@ export default class Layout {
             let box_count = 0;
             while(box_count < boxes)
             {
-                let new_position = Math.floor((Math.random() * rows));
-                console.log(new_position)
-                if (this.grid[col][new_position])
+                let new_row = Math.floor((Math.random() * rows));
+                if (!this.grid[col][new_row])
                 {
-                    // pass
-                }
-                else
-                {
-                    this.grid[col][new_position] = 1;
-                    let box = new Box(scene, grid_size, col, new_position, width, height);
+                    this.grid[col][new_row] = 1;
+                    new Box(scene, grid_size, col, new_row, width, height);
                     box_count += 1;
                 }
             }
@@ -40,6 +35,7 @@ class Box {
         cube.position.x = x_pos * grid_size - width/2;
         cube.position.y = y_pos * grid_size - height/2;
         cube.position.z += grid_size;
+        cube.name = String(x_pos) + String(y_pos)
         scene.add(cube);
     }
 

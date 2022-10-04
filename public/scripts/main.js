@@ -48,7 +48,7 @@ var light = new THREE.PointLight(0xFFFF00);
 light.position.set(10, 0, 25);
 scene.add(light);
 
-let player_1 = new Player(scene, camera, width, height, grid_size, x_vel, y_vel, ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'], "player_1", 0xAD001A);
+new Player(scene, camera, width, height, grid_size, x_vel, y_vel, ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'], "player_1", 0xAD001A);
 
 //const stats = Stats()
 //document.body.appendChild(stats.dom)

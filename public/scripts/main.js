@@ -8,7 +8,7 @@ import Layout from './layout.js'
 import Player from './player.js'
 const scene = new THREE.Scene()
 
-const grid_size = 3
+const grid_size = 4
 const width = 80
 const height = 80
 let x_vel = grid_size
@@ -24,10 +24,10 @@ const camera = new THREE.PerspectiveCamera(
     1000
 );
 
-camera.position.z = 6
+camera.position.z = 57.6
 camera.position.y = -45
 camera.position.x = -37.6
-camera.rotation.x = 1.52
+camera.rotation.x = 0.59
 camera.rotation.y = 0
 camera.rotation.z = 0
 
@@ -40,7 +40,8 @@ document.body.appendChild(renderer.domElement);
 const geometry = new THREE.BoxGeometry(width, height, 1)
 const material = new THREE.MeshBasicMaterial({color: 0x90AD96})
 const background = new THREE.Mesh(geometry, material)
-background.position.x -= grid_size
+background.position.x -= grid_size/2
+background.position.y -= (grid_size/2 - 0.5)
 scene.add(background)
 
 
@@ -53,7 +54,7 @@ new Player(scene, camera, width, height, grid_size, x_vel, y_vel, ['ArrowUp', 'A
 //const stats = Stats()
 //document.body.appendChild(stats.dom)
 
-/*
+
 const gui = new GUI()
 const cam_pos = gui.addFolder('Camera pos')
 const cam_rot = gui.addFolder('Camera rot')
@@ -65,7 +66,7 @@ cam_rot.add(camera.rotation, 'x', -Math.PI, Math.PI)
 cam_rot.add(camera.rotation, 'y', -Math.PI, Math.PI)
 cam_rot.add(camera.rotation, 'z', -Math.PI, Math.PI)
 cam_rot.open()
-*/
+
 
 function animate() {
     requestAnimationFrame(animate)

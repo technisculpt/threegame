@@ -32,10 +32,10 @@ class Box {
         const geometry = new THREE.BoxGeometry(grid_size, grid_size, grid_size);
         const material = new THREE.MeshPhongMaterial({color: 0xAA90A7});
         const cube = new THREE.Mesh(geometry, material);
-        cube.position.x = x_pos * grid_size - width/2;
-        cube.position.y = y_pos * grid_size - height/2;
+        cube.position.x = (x_pos * grid_size) - width/2;
+        cube.position.y = (y_pos * grid_size) - height/2;
         cube.position.z += grid_size;
-        cube.name = String(x_pos) + String(y_pos)
+        cube.name = String(x_pos) + ',' + String(y_pos)
         scene.add(cube);
     }
 

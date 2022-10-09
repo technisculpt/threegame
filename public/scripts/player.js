@@ -3,10 +3,10 @@ import { TWEEN } from '../jsm/libs/tween.module.min.js'
 
 export default class Player
 {
-    constructor(scene, camera, width, height, grid_size, x_vel, y_vel, keys, player_name, colour)
+    constructor(scene, camera, width, height, grid_size, keys, player_name, colour)
     {
         this.debounce = false;
-        this.tween_duration = 100;
+        this.tween_duration = 50;
         this.camera = camera;
         this.keys = keys;
         this.width = width;
@@ -46,6 +46,7 @@ export default class Player
             setTimeout(this.set_debounce, this.tween_duration + 50);
             let x_pos = Math.floor((this.player_mesh.position.x + this.width/2)/this.grid_size)
             let y_pos = Math.floor((this.player_mesh.position.y + this.height/2)/this.grid_size)
+
             if (e.code == this.keys[0]) // up
             {
                 if (!document.grid.grid[x_pos][y_pos + 1])
@@ -57,8 +58,9 @@ export default class Player
                 {
                     document.grid.grid[x_pos][y_pos + 1] = 0;
                     document.grid.grid[x_pos][y_pos + 2] = 1;
-                    var selected_box = this.scene.getObjectByName(String(x_pos) + String(y_pos + 1));
-                    selected_box.name = String(x_pos) + String(y_pos + 2)
+
+                    let selected_box = this.scene.getObjectByName(String(x_pos) + ',' + String(y_pos + 1));
+                    selected_box.name = String(x_pos) + ',' + String(y_pos + 2)
                     new TWEEN.Tween(selected_box.position).to({y: selected_box.position.y + this.grid_size},this.tween_duration).start()
                     new TWEEN.Tween(this.player_mesh.position).to({y: this.player_mesh.position.y + this.grid_size},this.tween_duration).start()
                     new TWEEN.Tween(this.camera.position).to({y: this.camera.position.y + this.grid_size},this.tween_duration).start()
@@ -76,14 +78,15 @@ export default class Player
                 {
                     document.grid.grid[x_pos][y_pos - 1] = 0;
                     document.grid.grid[x_pos][y_pos - 2] = 1;
-                    var selected_box = this.scene.getObjectByName(String(x_pos) + String(y_pos - 1));
-                    selected_box.name = String(x_pos) + String(y_pos - 2)
+                    let selected_box = this.scene.getObjectByName(String(x_pos) + ',' + String(y_pos - 1));
+                    selected_box.name = String(x_pos) + ',' + String(y_pos - 2)
                     new TWEEN.Tween(selected_box.position).to({y: selected_box.position.y - this.grid_size},this.tween_duration).start()
                     new TWEEN.Tween(this.player_mesh.position).to({y: this.player_mesh.position.y - this.grid_size},this.tween_duration).start()
                     new TWEEN.Tween(this.camera.position).to({y: this.camera.position.y - this.grid_size},this.tween_duration).start()
                 }
+
             }
-            if (e.code == this.keys[2])
+            if (e.code == this.keys[2]) // left
             {
                 if (!document.grid.grid[x_pos - 1][y_pos])
                 {
@@ -94,14 +97,14 @@ export default class Player
                 {
                     document.grid.grid[x_pos - 1][y_pos] = 0;
                     document.grid.grid[x_pos - 2][y_pos] = 1;
-                    var selected_box = this.scene.getObjectByName(String(x_pos - 1) + String(y_pos));
-                    selected_box.name = String(x_pos - 2) + String(y_pos)
+                    let selected_box = this.scene.getObjectByName(String(x_pos - 1) + ',' + String(y_pos));
+                    selected_box.name = String(x_pos - 2) + ',' + String(y_pos)
                     new TWEEN.Tween(selected_box.position).to({x: selected_box.position.x - this.grid_size},this.tween_duration).start()
                     new TWEEN.Tween(this.player_mesh.position).to({x: this.player_mesh.position.x - this.grid_size},this.tween_duration).start()
                     new TWEEN.Tween(this.camera.position).to({x: this.camera.position.x - this.grid_size},this.tween_duration).start()
                 }
             }
-            if (e.code == this.keys[3])
+            if (e.code == this.keys[3]) // right
             {
                 if (!document.grid.grid[x_pos + 1][y_pos])
                 {
@@ -112,8 +115,8 @@ export default class Player
                 {
                     document.grid.grid[x_pos + 1][y_pos] = 0;
                     document.grid.grid[x_pos + 2][y_pos] = 1;
-                    var selected_box = this.scene.getObjectByName(String(x_pos + 1) + String(y_pos));
-                    selected_box.name = String(x_pos + 2) + String(y_pos)
+                    let selected_box = this.scene.getObjectByName(String(x_pos + 1) + ',' + String(y_pos));
+                    selected_box.name = String(x_pos + 2) + ',' + String(y_pos)
                     new TWEEN.Tween(selected_box.position).to({x: selected_box.position.x + this.grid_size},this.tween_duration).start()
                     new TWEEN.Tween(this.player_mesh.position).to({x: this.player_mesh.position.x + this.grid_size},this.tween_duration).start()
                     new TWEEN.Tween(this.camera.position).to({x: this.camera.position.x + this.grid_size},this.tween_duration).start()

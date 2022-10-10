@@ -22,15 +22,16 @@ const camera = new THREE.PerspectiveCamera(
     1000
 );
 
-camera.position.z = 57.6
-camera.position.y = -45
-camera.position.x = -37.6
-camera.rotation.x = 0.59
+camera.position.z = 64.8
+camera.position.y = -18
+camera.position.x = -5.8
+camera.rotation.x = 0.13
 camera.rotation.y = 0
 camera.rotation.z = 0
 
-const renderer = new THREE.WebGLRenderer()
+const renderer = new THREE.WebGLRenderer({ antialias: true })
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
 document.body.appendChild(renderer.domElement);
 
 //const controls = new OrbitControls(camera, renderer.domElement)
@@ -48,11 +49,11 @@ var light = new THREE.PointLight(0xFFFF00);
 light.position.set(10, 0, 25);
 scene.add(light);
 
-new Player(scene, camera, width, height, grid_size, ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'], "player_1", 0xAD001A);
+new Player(scene, width, height, grid_size, ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'], 1, 0x123FFF);
+new Player(scene, width, height, grid_size, ['KeyW', 'KeyS', 'KeyA', 'KeyD'], 2, 0xFF001A);
 
 //const stats = Stats()
 //document.body.appendChild(stats.dom)
-
 /*
 const gui = new GUI()
 const cam_pos = gui.addFolder('Camera pos')

@@ -55,7 +55,7 @@ export default class Player
             let delta_x = this.key_lookup[e.code][0];
             let delta_y = this.key_lookup[e.code][1];
 
-            if (!document.grid.grid[x_pos + delta_x][y_pos + delta_y])
+            if (!document.grid.grid[x_pos + delta_x][y_pos + delta_y]) // no block in the way
             {  
                 if(!delta_x)
                 {
@@ -69,7 +69,7 @@ export default class Player
                 }
 
             }
-            else if (!document.grid.grid[x_pos + 2 * delta_x][y_pos + 2 * delta_y])
+            else if (!document.grid.grid[x_pos + 2 * delta_x][y_pos + 2 * delta_y]) // block in the way but no block behind it
             {
                 document.grid.grid[x_pos + delta_x][y_pos + delta_y] = 0;
                 document.grid.grid[x_pos + 2 * delta_x][y_pos + 2 * delta_y] = 1;
@@ -84,13 +84,39 @@ export default class Player
                 else
                 {
                     let selected_box = this.scene.getObjectByName(String(x_pos + delta_x) + ',' + String(y_pos));
-                    selected_box.name = String(x_pos + (2 * delta_x)) + ',' + String(y_pos)
+                    selected_box.name = String(x_pos + 2 * delta_x) + ',' + String(y_pos)
                     new TWEEN.Tween(selected_box.position).to({x: selected_box.position.x + delta_x * this.grid_size},this.tween_duration).start()
                     new TWEEN.Tween(this.player_mesh.position).to({x: this.player_mesh.position.x + delta_x * this.grid_size},this.tween_duration).start()
                     new TWEEN.Tween(this.camera.position).to({x: this.camera.position.x + delta_x * this.grid_size},this.tween_duration).start()
                 }
             }
-
+            else if (!document.grid.grid[x_pos + 3 * delta_x][y_pos + 3 * delta_y]) // 2 blocks in the way but no block behind it 
+            {
+                document.grid.grid[x_pos + delta_x][y_pos + delta_y] = 0;
+                document.grid.grid[x_pos + 3 * delta_x][y_pos + 3 * delta_y] = 1;
+                if(!delta_x)
+                {
+                    let selected_box1 = this.scene.getObjectByName(String(x_pos) + ',' + String(y_pos + delta_y));
+                    let selected_box2 = this.scene.getObjectByName(String(x_pos) + ',' + String(y_pos + 2 * delta_y));
+                    selected_box1.name = String(x_pos) + ',' + String(y_pos + 2 * delta_y);
+                    selected_box2.name = String(x_pos) + ',' + String(y_pos + 3 * delta_y);
+                    new TWEEN.Tween(selected_box2.position).to({y: selected_box2.position.y + delta_y * this.grid_size},this.tween_duration).start()
+                    new TWEEN.Tween(selected_box1.position).to({y: selected_box1.position.y + delta_y * this.grid_size},this.tween_duration).start()
+                    new TWEEN.Tween(this.player_mesh.position).to({y: this.player_mesh.position.y + delta_y * this.grid_size},this.tween_duration).start()
+                    new TWEEN.Tween(this.camera.position).to({y: this.camera.position.y + delta_y * this.grid_size},this.tween_duration).start()
+                }
+                else
+                {
+                    let selected_box1 = this.scene.getObjectByName(String(x_pos + delta_x) + ',' + String(y_pos));
+                    let selected_box2 = this.scene.getObjectByName(String(x_pos + 2 * delta_x) + ',' + String(y_pos));
+                    selected_box1.name = String(x_pos + 2 * delta_x) + ',' + String(y_pos);
+                    selected_box2.name = String(x_pos + 3 * delta_x) + ',' + String(y_pos);
+                    new TWEEN.Tween(selected_box1.position).to({x: selected_box1.position.x + delta_x * this.grid_size},this.tween_duration).start()
+                    new TWEEN.Tween(selected_box2.position).to({x: selected_box2.position.x + delta_x * this.grid_size},this.tween_duration).start()
+                    new TWEEN.Tween(this.player_mesh.position).to({x: this.player_mesh.position.x + delta_x * this.grid_size},this.tween_duration).start()
+                    new TWEEN.Tween(this.camera.position).to({x: this.camera.position.x + delta_x * this.grid_size},this.tween_duration).start()
+                }
+            }
         }
     }
 }

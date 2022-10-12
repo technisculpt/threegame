@@ -6,6 +6,7 @@ import { GUI } from '../jsm/libs/lil-gui.module.min.js'
 import { TWEEN } from '../jsm/libs/tween.module.min.js'
 import Layout from './layout.js'
 import Player from './player.js'
+import Ai from './ai.js'
 const scene = new THREE.Scene()
 
 const grid_size = 3
@@ -51,6 +52,7 @@ scene.add(light);
 
 new Player(scene, width, height, grid_size, ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'], 1, 0x123FFF);
 new Player(scene, width, height, grid_size, ['KeyW', 'KeyS', 'KeyA', 'KeyD'], 2, 0xFF001A);
+new Ai(scene, width, height, grid_size, 0x00001A);
 
 //const stats = Stats()
 //document.body.appendChild(stats.dom)

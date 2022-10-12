@@ -6,13 +6,12 @@ export default class Player
 {
     constructor(scene, width, height, grid_size, keys, player_no, colour)
     {
-        this.player_no = player_no
+        this.player_no = player_no;
         this.debounce = false;
         this.tween_duration1 = 10;
         this.tween_duration2 = 100;
         this.tween_duration3 = 500;
         this.debounce_ms = 20;
-        this.keys = keys;
         this.width = width;
         this.height = height;
         this.grid_size = grid_size;
@@ -25,11 +24,13 @@ export default class Player
         this.player_mesh = new THREE.Mesh(geometry, material)
         this.player_mesh.position.x = (new_pos[0]  * grid_size) - width/2;
         this.player_mesh.position.y = (new_pos[1] * grid_size)  - height/2;
-        this.player_mesh.position.z += grid_size
-        this.player_mesh.rotation.x += Math.PI/2
+        this.player_mesh.position.z += grid_size;
+        this.player_mesh.rotation.x += Math.PI/2;
         document.grid.grid[new_pos[0]][new_pos[1]] = player_no + 1;
-        this.scene = scene
-        this.scene.add(this.player_mesh)
+        this.player_mesh.name = String(new_pos[0]) + ',' + String(new_pos[1]);
+        this.player_mesh.object = this;
+        this.scene = scene;
+        this.scene.add(this.player_mesh);
         this.keys = keys;
         this.key_lookup = {};
         this.key_lookup[keys[0]] = [0,1];
@@ -39,6 +40,14 @@ export default class Player
         document.addEventListener('keydown', this.logKey);
     }
 
+    delete = (x, y) =>
+    {
+        document.grid.grid[x][y] = 0;
+        this.scene.remove(this.player_mesh);
+        this.keys = '';
+        delete this;
+    }
+
     set_debounce = () =>
     {
         this.debounce = false;
@@ -46,7 +55,6 @@ export default class Player
 
     logKey = (e) =>
     {
-
         if (!this.keys.includes(e.code)) return;
 
         if(!this.debounce)
@@ -62,12 +70,15 @@ export default class Player
 
             if (document.grid.grid[x_pos + delta_x][y_pos + delta_y] > 1) return; // player infront
 
+            if (document.grid.grid[x_pos + delta_x][y_pos + delta_y] == 'a') return; // ai infront
+
             if (document.grid.grid[x_pos + delta_x][y_pos + delta_y] == 0) // no block in the way of player
             {
                 this.debounce = true;
                 setTimeout(this.set_debounce, this.tween_duration1 + this.debounce_ms);
                 document.grid.grid[x_pos][y_pos] = 0;
                 document.grid.grid[x_pos + delta_x][y_pos + delta_y] = this.player_no + 1;
+                this.player_mesh.name = String(x_pos + delta_x) + ',' + String(y_pos + delta_y);
                 new TWEEN.Tween(this.player_mesh.position).to({
                     x: this.player_mesh.position.x + delta_x * this.grid_size,
                     y: this.player_mesh.position.y + delta_y * this.grid_size},this.tween_duration1).start();
@@ -78,12 +89,14 @@ export default class Player
             
             else if(document.grid.grid[x_pos + 2 * delta_x][y_pos + 2 * delta_y] == 0) // block in the way of player but no block behind it
             {
+                if(document.grid.grid[x_pos + 2 * delta_x][y_pos + 2 * delta_y] == 'a') return; // ai in the way
                 this.debounce = true;
                 setTimeout(this.set_debounce, this.tween_duration2 + this.debounce_ms);
                 document.grid.grid[x_pos + delta_x][y_pos + delta_y] = 0;
                 document.grid.grid[x_pos + 2 * delta_x][y_pos + 2 * delta_y] = 1;
                 document.grid.grid[x_pos][y_pos] = 0;
                 document.grid.grid[x_pos + delta_x][y_pos + delta_y] = this.player_no + 1;
+                this.player_mesh.name = String(x_pos + delta_x) + ',' + String(y_pos + delta_y);
                 let selected_box = this.scene.getObjectByName(String(x_pos + delta_x) + ',' + String(y_pos + delta_y));
                 selected_box.name = String(x_pos + 2 * delta_x) + ',' + String(y_pos + 2 * delta_y);
                 new TWEEN.Tween(selected_box.position).to({
@@ -100,12 +113,14 @@ export default class Player
             else if (document.grid.grid[x_pos + 3 * delta_x][y_pos + 3 * delta_y] == 0) // 2 blocks in the way but no block behind it 
             {
                 if(document.grid.grid[x_pos + 2 * delta_x][y_pos + 2 * delta_y] > 1) return; // other player 2 blocks behind
+                if(document.grid.grid[x_pos + 2 * delta_x][y_pos + 2 * delta_y] == 'a') return; // ai in the way
                 this.debounce = true;
                 setTimeout(this.set_debounce, this.tween_duration3 + this.debounce_ms);
                 document.grid.grid[x_pos + delta_x][y_pos + delta_y] = 0;
                 document.grid.grid[x_pos + 3 * delta_x][y_pos + 3 * delta_y] = 1;
                 document.grid.grid[x_pos][y_pos] = 0;
                 document.grid.grid[x_pos + delta_x][y_pos + delta_y] = this.player_no + 1;
+                this.player_mesh.name = String(x_pos + delta_x) + ',' + String(y_pos + delta_y);
                 let selected_box1 = this.scene.getObjectByName(String(x_pos + delta_x) + ',' + String(y_pos + delta_y));
                 let selected_box2 = this.scene.getObjectByName(String(x_pos + 2 * delta_x) + ',' + String(y_pos + 2 * delta_y));
                 selected_box1.name = String(x_pos + 2 * delta_x) + ',' + String(y_pos + 2 * delta_y);

@@ -34,22 +34,14 @@ export default class Ai
         {
             this.dirY = 1;
         }
+        
 
         setInterval(this.move, this.tween_duration);
     }
 
-    rotate = () =>
+    pos = () =>
     {
-        if(!this.dirX)
-        {
-            this.dirX = this.dirY;
-            this.dirY = 0
-        }
-        if(!this.dirY)
-        {
-            this.dirY = this.dirX;
-            this.dirX = 0
-        }
+        return [this.ai_mesh.position.x, this.ai_mesh.position.y];
     }
 
     change_dir = () =>
@@ -69,12 +61,174 @@ export default class Ai
         this.debounce = false;
     }
 
+    seek_player = (x, y) =>
+    {
+        let x_pos = this.grid_spaces - x;
+        let x_neg = this.grid_spaces - x_pos + 1;
+        let y_pos = this.grid_spaces - y;
+        let y_neg = this.grid_spaces - y_pos + 1;
+
+        if(!this.dirX) // going in y dir
+        {
+            if(this.dirY > 0)
+            {
+                for(let i=0; i<y_pos; i++)
+                {
+                    if(document.grid.grid[x][y + i] == 1) break;
+                    if(document.grid.grid[x][y + i] > 1)
+                    {
+                        return [0, 1]
+                    }
+                }
+                for(let i=0; i<y_neg; i++)
+                {
+                    if(document.grid.grid[x][y - i] == 1) break;
+                    if(document.grid.grid[x][y - i] > 1)
+                    {
+                        return [0, -1]
+                    }
+                }
+                for(let i=0; i<x_pos; i++)
+                {
+                    if(document.grid.grid[x + i][y] == 1) break;
+                    if(document.grid.grid[x + i][y] > 1)
+                    {
+                        return [1, 0]
+                    }
+                }
+                for(let i=0; i<x_neg; i++)
+                {
+                    if(document.grid.grid[x - i][y] == 1) break;
+                    if(document.grid.grid[x - i][y] > 1)
+                    {
+                        return [-1, 0]
+                    }
+                }
+            }
+            else
+            {
+                for(let i=0; i<y_neg; i++)
+                {
+                    if(document.grid.grid[x][y - i] == 1) break;
+                    if(document.grid.grid[x][y - i] > 1)
+                    {
+                        return [0, -1]
+                    }
+                }
+                for(let i=0; i<y_pos; i++)
+                {
+                    if(document.grid.grid[x][y + i] == 1) break;
+                    if(document.grid.grid[x][y + i] > 1)
+                    {
+                        return [0, 1]
+                    }
+                }
+                for(let i=0; i<x_neg; i++)
+                {
+                    if(document.grid.grid[x - i][y] == 1) break;
+                    if(document.grid.grid[x - i][y] > 1)
+                    {
+                        return [-1, 0]
+                    }
+                }
+                for(let i=0; i<x_pos; i++)
+                {
+                    if(document.grid.grid[x + i][y] == 1) break;
+                    if(document.grid.grid[x + i][y] > 1)
+                    {
+                        return [1, 0]
+                    }
+                }
+            }
+        }
+        else // going in x dir
+        if(this.dirX > 0)
+        {
+            for(let i=0; i<x_pos; i++)
+            {
+                if(document.grid.grid[x + i][y] == 1) break;
+                if(document.grid.grid[x + i][y] > 1)
+                {
+                    return [1, 0]
+                }
+            }
+            for(let i=0; i<x_neg; i++)
+            {
+                if(document.grid.grid[x - i][y] == 1) break;
+                if(document.grid.grid[x - i][y] > 1)
+                {
+                    return [-1, 0]
+                }
+            }
+            for(let i=0; i<y_pos; i++)
+            {
+                if(document.grid.grid[x][y + i] == 1) break;
+                if(document.grid.grid[x][y + i] > 1)
+                {
+                    return [0, 1]
+                }
+            }
+            for(let i=0; i<y_neg; i++)
+            {
+                if(document.grid.grid[x][y - i] == 1) break;
+                if(document.grid.grid[x][y - i] > 1)
+                {
+                    return [0, -1]
+                }
+            }
+        }
+        else
+        {
+            for(let i=0; i<x_neg; i++)
+            {
+                if(document.grid.grid[x - i][y] == 1) break;
+                if(document.grid.grid[x - i][y] > 1)
+                {
+                    return [-1, 0]
+                }
+            }
+            for(let i=0; i<x_pos; i++)
+            {
+                if(document.grid.grid[x + i][y] == 1) break;
+                if(document.grid.grid[x + i][y] > 1)
+                {
+                    return [1, 0]
+                }
+            }
+            for(let i=0; i<y_neg; i++)
+            {
+                if(document.grid.grid[x][y - i] == 1) break;
+                if(document.grid.grid[x][y - i] > 1)
+                {
+                    return [0, -1]
+                }
+            }
+            for(let i=0; i<y_pos; i++)
+            {
+                if(document.grid.grid[x][y + i] == 1) break;
+                if(document.grid.grid[x][y + i] > 1)
+                {
+                    return [0, 1]
+                }
+            }
+        }
+        return -1
+    }
+
     move = () =>
     {
         if(!this.debounce)
         {
             let x_pos = Math.floor((this.ai_mesh.position.x + this.width/2)/this.grid_size);
             let y_pos = Math.floor((this.ai_mesh.position.y + this.height/2)/this.grid_size);
+
+            let heading = this.seek_player(x_pos, y_pos)
+            
+            if(heading != -1)
+            {
+                this.dirX = heading[0];
+                this.dirY = heading[1];
+            }
 
             if ((x_pos + this.dirX >= this.grid_spaces) || (x_pos + this.dirX < 0) || // ai bounds check
             (y_pos + this.dirY >= this.grid_spaces) || (y_pos + this.dirY < 0))
@@ -104,7 +258,11 @@ export default class Ai
             {
                 this.change_dir();
             }
-
+            /*
+            new TWEEN.Tween(this.light.position).to({
+                x: this.ai_mesh.position.x,
+                y: this.ai_mesh.position.y},this.tween_duration).start();
+            */
         }
     }
 }

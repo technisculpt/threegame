@@ -72,6 +72,8 @@ export default class Player
 
             if (document.grid.grid[x_pos + delta_x][y_pos + delta_y] == 'a') return; // ai infront
 
+            if (document.grid.grid[x_pos + delta_x][y_pos + delta_y] == 'o') return; // movement taking place infront
+
             if (document.grid.grid[x_pos + delta_x][y_pos + delta_y] == 0) // no block in the way of player
             {
                 this.debounce = true;
@@ -90,10 +92,10 @@ export default class Player
             else if(document.grid.grid[x_pos + 2 * delta_x][y_pos + 2 * delta_y] == 0) // block in the way of player but no block behind it
             {
                 if(document.grid.grid[x_pos + 2 * delta_x][y_pos + 2 * delta_y] == 'a') return; // ai in the way
-                document.grid.grid[x_pos + delta_x][y_pos + delta_y] = 0;
-                document.grid.grid[x_pos + 2 * delta_x][y_pos + 2 * delta_y] = 1;
+
+                document.grid.grid[x_pos + 2 * delta_x][y_pos + 2 * delta_y] = 'o';
                 document.grid.grid[x_pos][y_pos] = 0;
-                document.grid.grid[x_pos + delta_x][y_pos + delta_y] = this.player_no + 1;
+                document.grid.grid[x_pos + delta_x][y_pos + delta_y] = 'o';
                 this.debounce = true;
                 setTimeout(this.set_debounce, this.tween_duration2 + this.debounce_ms);
                 this.player_mesh.name = String(x_pos + delta_x) + ',' + String(y_pos + delta_y);
@@ -104,41 +106,56 @@ export default class Player
                     y: selected_box.position.y + delta_y * this.grid_size},this.tween_duration2).start();
                 new TWEEN.Tween(this.player_mesh.position).to({
                     x: this.player_mesh.position.x + delta_x * this.grid_size,
-                    y: this.player_mesh.position.y + delta_y * this.grid_size},this.tween_duration2).start();
+                    y: this.player_mesh.position.y + delta_y * this.grid_size},this.tween_duration2)
+                    .onComplete(() => {
+                        document.grid.grid[x_pos + 2 * delta_x][y_pos + 2 * delta_y] = 1;
+                        document.grid.grid[x_pos][y_pos] = 0;
+                        document.grid.grid[x_pos + delta_x][y_pos + delta_y] = this.player_no + 1;
+                    }).start();
+
             }
 
             else if ((x_pos + 3 * delta_x >= this.grid_spaces) || (x_pos + 3 * delta_x < 0) || // box2 bounds check
             (y_pos + 3 * delta_y >= this.grid_spaces) || (y_pos + 3 * delta_y < 0)) return;
 
-            /*
-            else if (document.grid.grid[x_pos + 3 * delta_x][y_pos + 3 * delta_y] == 0) // 2 blocks in the way but no block behind it 
+            else if (document.grid.grid[x_pos + 3 * delta_x][y_pos + 3 * delta_y] == 0 && // 2 blocks in the way but no block behind them 
+            document.grid.grid[x_pos + 2 * delta_x][y_pos + 2 * delta_y] == 1 &&
+            document.grid.grid[x_pos + 1 * delta_x][y_pos + 1 * delta_y] == 1)
             {
-                if(document.grid.grid[x_pos + 2 * delta_x][y_pos + 2 * delta_y] > 1) return; // other player 2 blocks behind
-                if(document.grid.grid[x_pos + 2 * delta_x][y_pos + 2 * delta_y] == 'a') return; // ai in the way
-
                 this.player_mesh.name = String(x_pos + delta_x) + ',' + String(y_pos + delta_y);
                 this.debounce = true;
                 setTimeout(this.set_debounce, this.tween_duration3 + this.debounce_ms);
                 let selected_box1 = this.scene.getObjectByName(String(x_pos + delta_x) + ',' + String(y_pos + delta_y));
                 let selected_box2 = this.scene.getObjectByName(String(x_pos + 2 * delta_x) + ',' + String(y_pos + 2 * delta_y));
-                selected_box1.name = String(x_pos + 2 * delta_x) + ',' + String(y_pos + 2 * delta_y);
-                selected_box2.name = String(x_pos + 3 * delta_x) + ',' + String(y_pos + 3 * delta_y);
-
+                
+                
+                document.grid.grid[x_pos + 2 * delta_x][y_pos + 2 * delta_y] = 'o';
+                document.grid.grid[x_pos + 3 * delta_x][y_pos + 3 * delta_y] = 'o';
+                document.grid.grid[x_pos][y_pos] = 0;
+                document.grid.grid[x_pos + delta_x][y_pos + delta_y] = 'o';
                 new TWEEN.Tween(selected_box2.position).to({
                     x: selected_box2.position.x + delta_x * this.grid_size,
-                    y: selected_box2.position.y + delta_y * this.grid_size},this.tween_duration3).start();
+                    y: selected_box2.position.y + delta_y * this.grid_size},this.tween_duration3)
+                    .onComplete(() => {
+                        selected_box2.name = String(x_pos + 3 * delta_x) + ',' + String(y_pos + 3 * delta_y);
+                        document.grid.grid[x_pos + 3 * delta_x][y_pos + 3 * delta_y] = 1;
+                    }).start();
                 new TWEEN.Tween(selected_box1.position).to({
                     x: selected_box1.position.x + delta_x * this.grid_size,
-                    y: selected_box1.position.y + delta_y * this.grid_size},this.tween_duration3).start();
+                    y: selected_box1.position.y + delta_y * this.grid_size},this.tween_duration3)
+                    .onComplete(() => {
+                        document.grid.grid[x_pos + 2 * delta_x][y_pos + 2 * delta_y] = 1;
+                        selected_box1.name = String(x_pos + 2 * delta_x) + ',' + String(y_pos + 2 * delta_y);
+                    }).start();
                 new TWEEN.Tween(this.player_mesh.position).to({
                     x: this.player_mesh.position.x + delta_x * this.grid_size,
-                    y: this.player_mesh.position.y + delta_y * this.grid_size},this.tween_duration3).start();
-                document.grid.grid[x_pos + 2 * delta_x][y_pos + 2 * delta_y] = 1;
-                document.grid.grid[x_pos + 3 * delta_x][y_pos + 3 * delta_y] = 1;
-                document.grid.grid[x_pos][y_pos] = 0;
-                document.grid.grid[x_pos + delta_x][y_pos + delta_y] = this.player_no + 1;
+                    y: this.player_mesh.position.y + delta_y * this.grid_size},this.tween_duration3)
+                    .onComplete(() => {
+                        document.grid.grid[x_pos + delta_x][y_pos + delta_y] = this.player_no + 1;
+                    }).start();
+
                 
-            }*/
+            }
         }
     }
 }

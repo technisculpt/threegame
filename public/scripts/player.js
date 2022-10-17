@@ -131,7 +131,7 @@ export default class Player
                 
                 document.grid.grid[x_pos + 2 * delta_x][y_pos + 2 * delta_y] = 'o';
                 document.grid.grid[x_pos + 3 * delta_x][y_pos + 3 * delta_y] = 'o';
-                document.grid.grid[x_pos][y_pos] = 0;
+                document.grid.grid[x_pos][y_pos] = 'o';
                 document.grid.grid[x_pos + delta_x][y_pos + delta_y] = 'o';
                 new TWEEN.Tween(selected_box2.position).to({
                     x: selected_box2.position.x + delta_x * this.grid_size,
@@ -151,6 +151,7 @@ export default class Player
                     x: this.player_mesh.position.x + delta_x * this.grid_size,
                     y: this.player_mesh.position.y + delta_y * this.grid_size},this.tween_duration3)
                     .onComplete(() => {
+                        document.grid.grid[x_pos][y_pos] = 0;
                         document.grid.grid[x_pos + delta_x][y_pos + delta_y] = this.player_no + 1;
                     }).start();
 

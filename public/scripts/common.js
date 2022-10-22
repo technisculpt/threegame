@@ -1,3 +1,5 @@
+import { GLTFLoader } from '../jsm/loaders/GLTFLoader.js';
+
 export function check_vacancy(bounds, grid_size)
 {
     let range_x = (bounds[1] - bounds[0])/grid_size - grid_size;
@@ -16,5 +18,18 @@ export function check_vacancy(bounds, grid_size)
             return [rowX, rowY];
         } 
     }
+
+}
+
+
+export function load(scene, path)
+{
+    const loader = new GLTFLoader();
+    loader.load( path, ( gltf ) => {
+	scene.add( gltf.scene );
+    return gltf;
+    }, undefined, function ( error ) {
+        console.error( error );
+    } );
 
 }

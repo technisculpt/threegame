@@ -63,7 +63,7 @@ let a = new Ai(scene, width, height, grid_size, ai_colour);
 //const stats = Stats()
 //document.body.appendChild(stats.dom)
 
-/*
+
 const gui = new GUI()
 const cam_pos = gui.addFolder('Camera pos')
 const cam_rot = gui.addFolder('Camera rot')
@@ -75,7 +75,7 @@ cam_rot.add(camera.rotation, 'x', -Math.PI, Math.PI)
 cam_rot.add(camera.rotation, 'y', -Math.PI, Math.PI)
 cam_rot.add(camera.rotation, 'z', -Math.PI, Math.PI)
 cam_rot.open()
-*/
+
 
 function animate() {
     requestAnimationFrame(animate)

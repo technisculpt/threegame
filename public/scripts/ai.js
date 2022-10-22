@@ -1,42 +1,57 @@
 import * as THREE from 'three'
 import { TWEEN } from '../jsm/libs/tween.module.min.js'
-import {check_vacancy} from './common.js'
+import {check_vacancy, load} from './common.js'
+import { GLTFLoader } from '../jsm/loaders/GLTFLoader.js';
 
 export default class Ai
 {
     constructor(scene, width, height, grid_size, colour)
     {
-        this.debounce = false;
-        this.tween_duration = 100;
-        this.debounce_ms = 20;
-        this.width = width;
-        this.height = height;
-        this.grid_size = grid_size;
-        this.grid_spaces = Math.floor(width/grid_size);
-        const geometry = new THREE.CylinderGeometry(this.grid_size/2, this.grid_size/2, this.grid_size, 20);
-        const material = new THREE.MeshBasicMaterial({color: colour})
-        let new_pos = null;
-        new_pos = check_vacancy([width/3, 2 * width/3, width/3, 2 * width/3], grid_size);
-        this.ai_mesh = new THREE.Mesh(geometry, material);
-        this.ai_mesh.position.x = (new_pos[0]  * grid_size) - width/2;
-        this.ai_mesh.position.y = (new_pos[1] * grid_size)  - height/2;
-        this.ai_mesh.position.z += grid_size
-        this.ai_mesh.rotation.x += Math.PI/2
-        document.grid.grid[new_pos[0]][new_pos[1]] = 'a';
-        this.scene = scene
-        this.scene.add(this.ai_mesh)
-        this.dirX = Math.round(Math.random());
-        if(this.dirX)
-        {
-            this.dirY = 0;
-        }
-        else
-        {
-            this.dirY = 1;
-        }
-        
+        //let x = load(scene, '../assets/badguy.glb');
+        const loader = new GLTFLoader();
+        loader.load( '../assets/badguy.glb', async ( gltf ) => {
+            scene.add(gltf.scene);
+            this.ai_mesh = await gltf.scene;
+            //this.ai_mesh.position.z += 10;
+            //this.ai_mesh.rotation.x += Math.PI/2;
 
-        setInterval(this.move, this.tween_duration);
+    
+
+            this.debounce = false;
+            this.tween_duration = 100;
+            this.debounce_ms = 20;
+            this.width = width;
+            this.height = height;
+            this.grid_size = grid_size;
+            this.grid_spaces = Math.floor(width/grid_size);
+            //const geometry = new THREE.CylinderGeometry(this.grid_size/2, this.grid_size/2, this.grid_size, 20);
+            const material = new THREE.MeshBasicMaterial({color: colour})
+            let new_pos = null;
+            new_pos = check_vacancy([width/3, 2 * width/3, width/3, 2 * width/3], grid_size);
+            //this.ai_mesh = new THREE.Mesh(geometry, material);
+            //this.ai_mesh = new THREE.Mesh(this.obj, material);
+            this.ai_mesh.position.x = (new_pos[0]  * grid_size) - width/2;
+            this.ai_mesh.position.y = (new_pos[1] * grid_size)  - height/2;
+            this.ai_mesh.position.z += grid_size
+            this.ai_mesh.rotation.x += Math.PI/2
+            document.grid.grid[new_pos[0]][new_pos[1]] = 'a';
+            this.scene = scene
+            //this.scene.add(this.ai_mesh)
+            this.dirX = Math.round(Math.random());
+            if(this.dirX)
+            {
+                this.dirY = 0;
+            }
+            else
+            {
+                this.dirY = 1;
+            }
+            
+
+            setInterval(this.move, this.tween_duration);
+        }, undefined, function ( error ) {
+            console.error( error );
+        } );
     }
 
     pos = () =>

@@ -7,6 +7,7 @@ import { TWEEN } from '../jsm/libs/tween.module.min.js'
 import Layout from './layout.js'
 import Player from './player.js'
 import Ai from './ai.js'
+import { MixOperation } from 'three'
 const scene = new THREE.Scene()
 
 const grid_size = 3
@@ -56,8 +57,8 @@ let light = new THREE.HemisphereLight( light_colour1, light_colour2, 1 );
 light.position.set(-grid_size, -grid_size, 20);
 scene.add(light);
 
-new Player(scene, width, height, grid_size, ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'], 1, player_1_colour);
-new Player(scene, width, height, grid_size, ['KeyW', 'KeyS', 'KeyA', 'KeyD'], 2, player_2_colour);
+let player1 = new Player(scene, width, height, grid_size, ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'], 1, player_1_colour);
+let player2 = new Player(scene, width, height, grid_size, ['KeyW', 'KeyS', 'KeyA', 'KeyD'], 2, player_2_colour);
 let a = new Ai(scene, width, height, grid_size, ai_colour);
 
 //const stats = Stats()
@@ -76,12 +77,22 @@ cam_rot.add(camera.rotation, 'y', -Math.PI, Math.PI)
 cam_rot.add(camera.rotation, 'z', -Math.PI, Math.PI)
 cam_rot.open()
 
-
+const clock = new THREE.Clock();
 function animate() {
+    let delta = clock.getDelta()
+    if(player2.mixer)
+    {
+        player2.mixer.update(delta);
+    }
+    if(player1.mixer)
+    {
+        player1.mixer.update(delta);
+    }
     requestAnimationFrame(animate)
     //controls.update()
     TWEEN.update()
     render()
+
     //stats.update()
 }
 

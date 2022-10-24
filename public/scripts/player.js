@@ -1,43 +1,70 @@
 import * as THREE from 'three'
 import { TWEEN } from '../jsm/libs/tween.module.min.js'
 import {check_vacancy} from './common.js'
+import { GLTFLoader } from '../jsm/loaders/GLTFLoader.js';
 
 export default class Player
 {
     constructor(scene, width, height, grid_size, keys, player_no, colour)
     {
-        this.player_no = player_no;
-        this.debounce = false;
-        this.tween_duration1 = 10;
-        this.tween_duration2 = 100;
-        this.tween_duration3 = 500;
-        this.debounce_ms = 20;
-        this.width = width;
-        this.height = height;
-        this.grid_size = grid_size;
-        this.grid_spaces = Math.floor(width/grid_size);
-        const geometry = new THREE.CylinderGeometry(this.grid_size/2, this.grid_size/2, this.grid_size, 20);
-        const material = new THREE.MeshBasicMaterial({color: colour})
-        let new_pos = null;
-        if (player_no == 1) {new_pos = check_vacancy([0, width/2, 0, height/2], grid_size);}
-        if (player_no == 2) {new_pos = check_vacancy([width/2, width, height/2, height], grid_size);}
-        this.player_mesh = new THREE.Mesh(geometry, material)
-        this.player_mesh.position.x = (new_pos[0]  * grid_size) - width/2;
-        this.player_mesh.position.y = (new_pos[1] * grid_size)  - height/2;
-        this.player_mesh.position.z += grid_size;
-        this.player_mesh.rotation.x += Math.PI/2;
-        document.grid.grid[new_pos[0]][new_pos[1]] = player_no + 1;
-        this.player_mesh.name = String(new_pos[0]) + ',' + String(new_pos[1]);
-        this.player_mesh.object = this;
-        this.scene = scene;
-        this.scene.add(this.player_mesh);
-        this.keys = keys;
-        this.key_lookup = {};
-        this.key_lookup[keys[0]] = [0,1];
-        this.key_lookup[keys[1]] = [0,-1];
-        this.key_lookup[keys[2]] = [-1,0];
-        this.key_lookup[keys[3]] = [1,0];
-        document.addEventListener('keydown', this.logKey);
+        const loader = new GLTFLoader();
+        loader.load( '../assets/goodguy' + player_no + '.glb', ( gltf ) =>
+        {
+            scene.add(gltf.scene);
+            this.player_mesh = gltf.scene;
+            this.mixer = new THREE.AnimationMixer(gltf.scene);
+            this.clips = gltf.animations;
+            this.action1 = this.mixer.clipAction(this.clips[0])
+            this.action2 = this.mixer.clipAction(this.clips[1])
+            this.player_no = player_no;
+            this.debounce = false;
+            this.tween_duration1 = 50;
+            this.tween_duration2 = 100;
+            this.tween_duration3 = 500;
+            this.debounce_ms = 20;
+            this.width = width;
+            this.height = height;
+            this.grid_size = grid_size;
+            this.grid_spaces = Math.floor(width/grid_size);
+            //const geometry = new THREE.CylinderGeometry(this.grid_size/2, this.grid_size/2, this.grid_size, 20);
+            //const material = new THREE.MeshBasicMaterial({color: colour})
+            let new_pos = null;
+            if (player_no == 1) {new_pos = check_vacancy([0, width/2, 0, height/2], grid_size);}
+            if (player_no == 2) {new_pos = check_vacancy([width/2, width, height/2, height], grid_size);}
+            //this.player_mesh = new THREE.Mesh(geometry, material)
+            this.player_mesh.position.x = (new_pos[0]  * grid_size) - width/2;
+            this.player_mesh.position.y = (new_pos[1] * grid_size)  - height/2;
+            this.player_mesh.position.z += grid_size;
+            this.player_mesh.rotation.x += Math.PI/2;
+            document.grid.grid[new_pos[0]][new_pos[1]] = player_no + 1;
+            this.player_mesh.name = String(new_pos[0]) + ',' + String(new_pos[1]);
+            this.player_mesh.object = this;
+            this.scene = scene;
+            this.scene.add(this.player_mesh);
+            this.keys = keys;
+            this.key_lookup = {};
+            this.key_lookup[keys[0]] = [0,1];
+            this.key_lookup[keys[1]] = [0,-1];
+            this.key_lookup[keys[2]] = [-1,0];
+            this.key_lookup[keys[3]] = [1,0];
+            document.addEventListener('keydown', this.logKey);
+        }, undefined, function ( error ) {
+            console.error( error );
+        } );
+    }
+
+    bounce = (time) =>
+    {
+        this.action1.setDuration(time/1000);
+        this.action2.setDuration(time/1000);
+        this.action1.play();
+        this.action2.play();
+    }
+
+    dont_bounce = () =>
+    {
+        this.action1.stop();
+        this.action2.stop();
     }
 
     delete = (x, y) =>
@@ -51,6 +78,7 @@ export default class Player
     set_debounce = () =>
     {
         this.debounce = false;
+        this.dont_bounce();
     }
 
     logKey = (e) =>
@@ -76,6 +104,7 @@ export default class Player
 
             if (document.grid.grid[x_pos + delta_x][y_pos + delta_y] == 0) // no block in the way of player
             {
+                this.bounce(this.tween_duration1);
                 this.debounce = true;
                 setTimeout(this.set_debounce, this.tween_duration1 + this.debounce_ms);
                 document.grid.grid[x_pos][y_pos] = 0;
@@ -97,6 +126,7 @@ export default class Player
                 document.grid.grid[x_pos][y_pos] = 0;
                 document.grid.grid[x_pos + delta_x][y_pos + delta_y] = 'o';
                 this.debounce = true;
+                this.bounce(this.tween_duration2);
                 setTimeout(this.set_debounce, this.tween_duration2 + this.debounce_ms);
                 this.player_mesh.name = String(x_pos + delta_x) + ',' + String(y_pos + delta_y);
                 let selected_box = this.scene.getObjectByName(String(x_pos + delta_x) + ',' + String(y_pos + delta_y));
@@ -124,6 +154,7 @@ export default class Player
             {
                 this.player_mesh.name = String(x_pos + delta_x) + ',' + String(y_pos + delta_y);
                 this.debounce = true;
+                this.bounce(this.tween_duration3);
                 setTimeout(this.set_debounce, this.tween_duration3 + this.debounce_ms);
                 let selected_box1 = this.scene.getObjectByName(String(x_pos + delta_x) + ',' + String(y_pos + delta_y));
                 let selected_box2 = this.scene.getObjectByName(String(x_pos + 2 * delta_x) + ',' + String(y_pos + 2 * delta_y));

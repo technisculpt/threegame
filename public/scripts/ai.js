@@ -7,16 +7,11 @@ export default class Ai
 {
     constructor(scene, width, height, grid_size, colour)
     {
-        //let x = load(scene, '../assets/badguy.glb');
         const loader = new GLTFLoader();
-        loader.load( '../assets/badguy.glb', async ( gltf ) => {
+        loader.load( '../assets/badguy.glb', ( gltf ) =>
+        {
             scene.add(gltf.scene);
-            this.ai_mesh = await gltf.scene;
-            //this.ai_mesh.position.z += 10;
-            //this.ai_mesh.rotation.x += Math.PI/2;
-
-    
-
+            this.ai_mesh = gltf.scene;
             this.debounce = false;
             this.tween_duration = 100;
             this.debounce_ms = 20;
@@ -25,7 +20,7 @@ export default class Ai
             this.grid_size = grid_size;
             this.grid_spaces = Math.floor(width/grid_size);
             //const geometry = new THREE.CylinderGeometry(this.grid_size/2, this.grid_size/2, this.grid_size, 20);
-            const material = new THREE.MeshBasicMaterial({color: colour})
+            //const material = new THREE.MeshBasicMaterial({color: colour})
             let new_pos = null;
             new_pos = check_vacancy([width/3, 2 * width/3, width/3, 2 * width/3], grid_size);
             //this.ai_mesh = new THREE.Mesh(geometry, material);
